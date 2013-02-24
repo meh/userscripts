@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        linkazza
-// @version     0.0.4
+// @version     0.0.5
 // @namespace   http://meh.schizofreni.co
 // @description Turn plain text URLs into links.
 // @updateURL   https://raw.github.com/meh/userscripts/master/linkazza.user.js
@@ -95,8 +95,6 @@ function linkazza (node) {
 
 			a.className = 'linkazza';
 
-			console.log([wbrs[0], position, link.length]);
-			
 			if (wbrs[0] && position < wbrs[0] && link.length + position > wbrs[0]) {
 				var last_position = 0;
 				var last_wbr;
@@ -109,8 +107,10 @@ function linkazza (node) {
 					last_position = position + link.length - wbrs[0];
 					last_wbr      = wbrs.shift();
 				}
-				
-				a.appendChild(touch(document.createTextNode(link.substr(last_wbr - position))));
+
+				if (last_wbr) {
+					a.appendChild(touch(document.createTextNode(link.substr(last_wbr - position))));
+				}
 			}
 			else {
 				a.appendChild(touch(document.createTextNode(link)));
@@ -147,8 +147,10 @@ function linkazza (node) {
 				last_position = position + text.length - wbrs[0];
 				last_wbr      = wbrs.shift();
 			}
-			
-			container.appendChild(touch(document.createTextNode(text.substr(last_wbr))));
+
+			if (last_wbr) {
+				container.appendChild(touch(document.createTextNode(text.substr(last_wbr))));
+			}
 		}
 		else {
 			container.appendChild(document.createTextNode(text.substring(position)));

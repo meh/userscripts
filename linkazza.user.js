@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        linkazza
-// @version     0.0.5
+// @version     0.0.6
 // @namespace   http://meh.schizofreni.co
 // @description Turn plain text URLs into links.
 // @updateURL   https://raw.github.com/meh/userscripts/master/linkazza.user.js
@@ -97,15 +97,17 @@ function linkazza (node) {
 
 			if (wbrs[0] && position < wbrs[0] && link.length + position > wbrs[0]) {
 				var last_position = 0;
+				var last_length   = 0;
 				var last_wbr;
-				
+
 				while (wbrs[0] && position < wbrs[0] && position + link.length > wbrs[0]) {
 					a.appendChild(touch(document.createTextNode(link.substr(
-						last_position, wbrs[0] - position))));
+						last_position, wbrs[0] - position - last_length))));
 					a.appendChild(document.createElement("WBR"));
 
-					last_position = position + link.length - wbrs[0];
-					last_wbr      = wbrs.shift();
+					last_length   += link.substr(last_position, wbrs[0] - position - last_length).length;
+					last_position  = wbrs[0] - position;
+					last_wbr       = wbrs.shift();
 				}
 
 				if (last_wbr) {
@@ -138,13 +140,13 @@ function linkazza (node) {
 		if (wbrs[0]) {
 			var last_position = position;
 			var last_wbr;
-			
-			while (wbrs[0] && position < wbrs[0] && position + last_position > wbrs[0]) {
+
+			while (wbrs[0] && last_position < wbrs[0]) {
 				container.appendChild(touch(document.createTextNode(text.substr(
-					last_position, wbrs[0] - position ))));
+					last_position, wbrs[0] - last_position))));
 				container.appendChild(document.createElement("WBR"));
 
-				last_position = position + text.length - wbrs[0];
+				last_position = wbrs[0];
 				last_wbr      = wbrs.shift();
 			}
 
